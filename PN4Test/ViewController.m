@@ -69,7 +69,11 @@
 #pragma mark - PubNub client
 
 - (void)prepareClient {
-    
+
+    [PNLog enabled:YES];
+    [PNLog setMaximumLogFileSize:100];
+    [PNLog setMaximumNumberOfLogFiles:10];
+
     PNConfiguration *configuration = [PNConfiguration configurationWithPublishKey:@"demo"
                                                                      subscribeKey:@"demo"];
     self.client = [PubNub clientWithConfiguration:configuration];
@@ -81,13 +85,13 @@
     [self.client subscribeToChannels:@[@"bot"] withPresence:NO];
 }
 
-- (void)client:(PubNub *)client didReceiveMessage:(PNResult *)message withStatus:(PNStatus *)status {
+- (void)client:(PubNub *)client didReceiveMessage:(PNResult <PNMessageResult>*)message withStatus:(PNStatus *)status {
     
-    [self addMessage:message.data[@"message"]];
+    [self addMessage:message.data.message];
     [self.messagesField scrollsToTop];
 }
 
-- (void)client:(PubNub *)client didReceiveStatus:(PNStatus *)status {
+- (void)client:(PubNub *)client didReceiveStatus:(PNStatus<PNStatus> *)status {
     
     if (status.category == PNAccessDeniedCategory) {
         
@@ -141,7 +145,7 @@
         textField.text = nil;
         textField.placeholder = @"Sending...";
         [self.client publish:message toChannel:self.channelNameField.text
-                  compressed:NO withCompletion:^(PNStatus *status) {
+                  compressed:NO withCompletion:^(PNStatus <PNPublishStatus> *status) {
                       
                       textField.placeholder = (!status.isError ? @"Message sent" : @"Message sending error");
                       dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
