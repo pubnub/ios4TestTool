@@ -1,5 +1,5 @@
 source 'https://github.com/CocoaPods/Specs.git'
 platform :ios, '7.0'
-pod 'PubNub', :git => 'https://github.com/pubnub/objective-c.git', :branch => '4.0b2'
+pod 'PubNub', :git => 'https://github.com/pubnub/objective-c.git', :branch => '4.0b3'
 pod 'AFNetworking', '~> 2.5'
 pod 'CocoaLumberjack'
